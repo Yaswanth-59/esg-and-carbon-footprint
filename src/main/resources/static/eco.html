@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EcoHabit Tracker</title>
+
+<style>
+/* General */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background: linear-gradient(135deg, #2e7d32, #1b5e20);
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+}
+
+/* Container */
+.dashboard-container {
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(12px);
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    text-align: center;
+    width: 420px;
+    animation: fadeIn 0.7s ease;
+}
+
+@keyframes fadeIn {
+    from {opacity:0; transform:translateY(20px);}
+    to {opacity:1; transform:translateY(0);}
+}
+
+h1 {
+    margin-bottom: 10px;
+}
+
+/* Activity Section */
+.activity-section {
+    margin-top: 20px;
+}
+
+.activity-section label {
+    display: block;
+    font-size: 1rem;
+    margin: 8px 0;
+    cursor: pointer;
+}
+
+/* Ranking Table */
+.ranking-section {
+    margin-top: 20px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+    background: rgba(255,255,255,0.2);
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+th, td {
+    padding: 10px;
+    border: 1px solid rgba(255,255,255,0.3);
+}
+
+th {
+    background: rgba(255,255,255,0.3);
+}
+
+/* Buttons */
+.btn {
+    width: 100%;
+    padding: 12px;
+    font-size: 1rem;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    transition: 0.3s;
+    color: white;
+    margin-top: 10px;
+}
+
+.log-btn {
+    background: #388e3c;
+}
+
+.log-btn:hover {
+    background: #2e7d32;
+    transform: scale(1.05);
+}
+
+.back-btn {
+    background: #1565c0;
+}
+
+.back-btn:hover {
+    background: #0d47a1;
+    transform: scale(1.05);
+}
+</style>
+
+<script>
+function logActivity() {
+    alert("Activity logged successfully! 🌱");
+}
+
+function goBack() {
+    window.location.href = "/dashboard";
+}
+</script>
+</head>
+
+<body>
+
+<div class="dashboard-container">
+    <h1>🌿 EcoHabit Tracker</h1>
+    <p>Track your sustainable daily actions</p>
+
+    <div class="activity-section">
+        <h2>Log Your Activities</h2>
+
+        <label><input type="checkbox"> 💧 Saved Water</label>
+        <label><input type="checkbox"> 🚌 Used Public Transport</label>
+        <label><input type="checkbox"> ♻️ Reduced Plastic Usage</label>
+        <label><input type="checkbox"> ⚡ Saved Energy</label>
+
+        <button class="btn log-btn" onclick="logActivity()">
+            Submit Activity
+        </button>
+    </div>
+
+    <div class="ranking-section">
+        <h2>User Rankings 🏆</h2>
+        <table>
+            <tr>
+                <th>Rank</th>
+                <th>User</th>
+                <th>Eco Score</th>
+            </tr>
+            <tr>
+                <td>1</td>
+                <td>Alice</td>
+                <td>92%</td>
+            </tr>
+            <tr>
+                <td>2</td>
+                <td>Bob</td>
+                <td>85%</td>
+            </tr>
+        </table>
+    </div>
+
+    <button class="btn back-btn" onclick="goBack()">
+        ← Back to Dashboard
+    </button>
+</div>
+
+</body>
+</html>

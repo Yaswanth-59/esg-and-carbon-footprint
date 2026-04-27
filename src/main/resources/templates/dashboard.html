@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>ESG Dashboard</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+body {
+    background: linear-gradient(135deg, #eef7f2, #e3f2fd);
+    font-family: 'Poppins', 'Segoe UI', sans-serif;
+}
+
+/* NAVBAR */
+.navbar {
+    background: linear-gradient(90deg, #0f5132, #198754);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+}
+.navbar-brand, .nav-link {
+    color: white !important;
+    font-weight: 500;
+}
+
+/* SCORE CARDS */
+.score-card {
+    border-radius: 18px;
+    color: white;
+    text-align: center;
+    padding: 22px;
+    font-size: 18px;
+    font-weight: 600;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+}
+
+.env-card { background: linear-gradient(135deg, #2e7d32, #66bb6a); }
+.social-card { background: linear-gradient(135deg, #1565c0, #42a5f5); }
+.gov-card { background: linear-gradient(135deg, #6a1b9a, #ab47bc); }
+.esg-card { background: linear-gradient(135deg, #ef6c00, #ff9800); }
+
+/* CHART CARDS */
+.card {
+    border-radius: 18px;
+    border: none;
+    background: rgba(255,255,255,0.95);
+    transition: 0.3s;
+}
+.card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 15px 30px rgba(0,0,0,0.15);
+}
+
+.section-title {
+    font-weight: 600;
+    color: #0f5132;
+}
+
+.footer {
+    background: linear-gradient(90deg, #0f5132, #198754);
+    color: white;
+    text-align: center;
+    padding: 15px;
+    margin-top: 40px;
+    font-weight: 500;
+}
+
+canvas {
+    max-height: 260px;
+}
+</style>
+</head>
+
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar navbar-expand-lg">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="/dashboard">🌍 ESG Dashboard</a>
+
+        <a class="nav-link" href="/dashboard">Dashboard</a>
+        <a class="nav-link" href="/environmental">Environmental</a>
+        <a class="nav-link" href="/social">Social</a>
+        <a class="nav-link" href="/governance">Governance</a>
+        <a class="nav-link" href="/history">History</a>
+
+        <div class="dropdown ms-3">
+            <button class="btn btn-light dropdown-toggle" data-bs-toggle="dropdown">
+                ♻️ ESG Activities
+            </button>
+            <ul class="dropdown-menu">
+                <li><a class="dropdown-item" href="/add-event.html">Add ESG Activity</a></li>
+                <li><a class="dropdown-item" href="/events.html">View ESG Activities</a></li>
+            </ul>
+        </div>
+
+        <a class="nav-link ms-3" href="/logout">Logout</a>
+    </div>
+</nav>
+
+<div class="container mt-4">
+
+    <!-- SCORE CARDS -->
+    <div class="row g-4 mb-4">
+        <div class="col-md-3">
+            <div class="score-card env-card">
+                Environmental<br>
+                <span style="font-size:30px;">[[${environmentalScore}]]%</span>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="score-card social-card">
+                Social<br>
+                <span style="font-size:30px;">[[${socialScore}]]%</span>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="score-card gov-card">
+                Governance<br>
+                <span style="font-size:30px;">[[${governanceScore}]]%</span>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="score-card esg-card">
+                ESG Score<br>
+                <span style="font-size:32px;">[[${esgScore}]]%</span>
+            </div>
+        </div>
+    </div>
+    
+    <!-- REAL-TIME ESG INSIGHTS -->
+    <div class="row g-4 mb-4">
+
+        <div class="col-md-4">
+            <div class="card p-4 shadow text-center">
+                <h5 class="section-title">ESG Risk Level</h5>
+                <p style="font-size:24px; font-weight:bold; color:#dc3545;">
+                    [[${esgRisk}]]
+                </p>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card p-4 shadow text-center">
+                <h5 class="section-title">Sustainability Badge</h5>
+                <p style="font-size:22px; font-weight:bold;">
+                    [[${ecoBadge}]]
+                </p>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card p-4 shadow text-center">
+                <h5 class="section-title">Carbon Equivalent</h5>
+                <p>
+                    Trees needed: <strong>[[${treesNeeded}]]</strong><br>
+                    Car distance: <strong>[[${carKm}]] km</strong>
+                </p>
+            </div>
+        </div>
+
+    </div> <!-- fixed closing of ESG insights row -->
+
+    <!-- Carbon Intensity + Prediction -->
+    <div class="row g-4 mt-3">
+
+        <div class="col-md-6">
+            <div class="card p-4 shadow text-center">
+                <div style="font-size:28px;">🌫️</div>
+                <h6 class="mt-2 text-muted">Carbon Intensity</h6>
+                <h3 style="font-weight:600; color:#198754;">
+                    [[${carbonIntensity}]]
+                </h3>
+                <small class="text-muted">CO₂ per activity unit</small>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="card p-4 shadow text-center">
+                <div style="font-size:28px;">📈</div>
+                <h6 class="mt-2 text-muted">Predicted ESG Score</h6>
+                <h3 style="font-weight:600; color:#0d6efd;">
+                    [[${predictedScore}]]%
+                </h3>
+                <small class="text-muted">Based on current trends</small>
+            </div>
+        </div>
+
+    </div>
+<!-- LAST CALCULATION RESULT -->
+<div class="card p-4 shadow mb-4">
+    <h5 class="section-title">Latest Environmental Result</h5>
+
+    <div class="row">
+        <div class="col-md-4">
+            <h6>Eco Score</h6>
+            <p style="font-size:22px; font-weight:bold;">
+                [[${lastEcoScore}]]%
+            </p>
+        </div>
+
+        <div class="col-md-4">
+            <h6>Rating</h6>
+            <p style="font-size:20px; font-weight:bold; color:#198754;">
+                [[${lastRating}]]
+            </p>
+        </div>
+
+        <div class="col-md-4">
+            <h6>Alert</h6>
+            <p style="font-weight:bold; color:#dc3545;">
+                [[${lastAlert}]]
+            </p>
+        </div>
+    </div>
+
+    <a href="/download-report" class="btn btn-success mt-3">
+        Download ESG Report (PDF)
+    </a>
+</div>
+
+<!-- ===== ROW 1: CARBON OVERVIEW ===== -->
+<div class="row g-4">
+
+    <!-- Carbon Distribution -->
+    <div class="col-md-6">
+        <div class="card p-4 shadow">
+            <h5 class="section-title text-center mb-3">
+                Carbon Distribution
+            </h5>
+            <canvas id="carbonChart"></canvas>
+        </div>
+    </div>
+
+    <!-- Carbon Trend -->
+    <div class="col-md-6">
+        <div class="card p-4 shadow">
+            <h5 class="section-title text-center mb-3">
+                Carbon Trend
+            </h5>
+            <canvas id="trendChart"></canvas>
+        </div>
+    </div>
+
+</div>
+
+<!-- ===== ROW 2: ESG PERFORMANCE ===== -->
+<div class="row g-4 mt-3">
+
+    <div class="col-md-3">
+        <div class="card p-4 shadow text-center">
+            <h6>Activity</h6>
+            <canvas id="activityChart"></canvas>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="card p-4 shadow text-center">
+            <h6>Social</h6>
+            <canvas id="socialChart"></canvas>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="card p-4 shadow text-center">
+            <h6>Governance</h6>
+            <canvas id="governanceChart"></canvas>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="card p-4 shadow text-center">
+            <h6>ESG Overall</h6>
+            <canvas id="esgChart"></canvas>
+        </div>
+    </div>
+
+</div>
+
+</div> <!-- end container -->
+
+<footer class="footer">
+    <p>© 2026 ESG Sustainability Project</p>
+</footer>
+
+<script th:inline="javascript">
+window.onload = function () {
+
+    const electricity = /*[[${electricity}]]*/ 0;
+    const food = /*[[${food}]]*/ 0;
+    const transport = /*[[${transport}]]*/ 0;
+    const waste = /*[[${waste}]]*/ 0;
+
+    const activityPoints = /*[[${activityPoints}]]*/ 0;
+    const socialScore = /*[[${socialScore}]]*/ 0;
+    const governanceScore = /*[[${governanceScore}]]*/ 0;
+    const esgScore = /*[[${esgScore}]]*/ 0;
+
+    const trendData = /*[[${trendValues}]]*/ [0];
+
+    // Carbon Bar Chart
+    new Chart(document.getElementById('carbonChart'), {
+        type: 'bar',
+        data: {
+            labels: ['Electricity', 'Food', 'Transport', 'Waste'],
+            datasets: [{
+                data: [electricity, food, transport, waste],
+                backgroundColor: ['#4e79a7','#59a14f','#f28e2b','#e15759'],
+                borderRadius: 8
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: { legend: { display: false } },
+            scales: { y: { beginAtZero: true } }
+        }
+    });
+
+    // Carbon Trend Line
+    new Chart(document.getElementById('trendChart'), {
+        type: 'line',
+        data: {
+            labels: trendData.map((_, i) => 'Entry ' + (i + 1)),
+            datasets: [{
+                label: 'Total Carbon',
+                data: trendData,
+                borderColor: '#198754',
+                backgroundColor: 'rgba(25,135,84,0.2)',
+                tension: 0.3,
+                fill: true
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: { legend: { display: false } },
+            scales: { y: { beginAtZero: true } }
+        }
+    });
+
+    // Activity Chart
+    new Chart(document.getElementById('activityChart'), {
+        type: 'doughnut',
+        data: {
+            labels: ['Activity', 'Remaining'],
+            datasets: [{
+                data: [activityPoints, 100 - activityPoints],
+                backgroundColor: ['#198754', '#e9ecef']
+            }]
+        }
+    });
+
+    // Social Chart
+    new Chart(document.getElementById('socialChart'), {
+        type: 'doughnut',
+        data: {
+            labels: ['Score', 'Remaining'],
+            datasets: [{
+                data: [socialScore, 100 - socialScore],
+                backgroundColor: ['#42a5f5', '#e9ecef']
+            }]
+        }
+    });
+
+    // Governance Chart
+    new Chart(document.getElementById('governanceChart'), {
+        type: 'doughnut',
+        data: {
+            labels: ['Score', 'Remaining'],
+            datasets: [{
+                data: [governanceScore, 100 - governanceScore],
+                backgroundColor: ['#ab47bc', '#e9ecef']
+            }]
+        }
+    });
+
+    // ESG Chart
+    new Chart(document.getElementById('esgChart'), {
+        type: 'doughnut',
+        data: {
+            labels: ['Score', 'Remaining'],
+            datasets: [{
+                data: [esgScore, 100 - esgScore],
+                backgroundColor: ['#ff9800', '#e9ecef']
+            }]
+        }
+    });
+
+};
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
