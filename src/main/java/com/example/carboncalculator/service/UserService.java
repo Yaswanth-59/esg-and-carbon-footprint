@@ -12,17 +12,27 @@ public class UserService {
     @Autowired
     private UserRepository userRepository;
 
-    private BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+    private final BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
 
     public boolean authenticate(String email, String password) {
+
         User user = userRepository.findByEmail(email);
-        return user != null && encoder.matches(password, user.getPassword());
+
+        return user != null &&
+               encoder.matches(password, user.getPassword());
     }
 
     public void register(String email, String password) {
-        User user = new User();
-        user.setEmail(email);
-        user.setPassword(encoder.encode(password));
-        userRepository.save(user);
+
+        User existingUser = userRepository.findByEmail(email);
+
+        if (existingUser == null) {
+
+            User user = new User();
+            user.setEmail(email);
+            user.setPassword(encoder.encode(password));
+
+            userRepository.save(user);
+        }
     }
 }
