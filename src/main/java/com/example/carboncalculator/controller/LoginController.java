@@ -24,6 +24,20 @@ public class LoginController {
         return "login";
     }
 
+    @GetMapping("/signup")
+    public String signupPage() {
+        return "login";
+    }
+
+    @PostMapping("/signup")
+    public String signup(@RequestParam String email,
+                         @RequestParam String password) {
+
+        userService.register(email, password);
+
+        return "redirect:/login?signupSuccess=true";
+    }
+
     @PostMapping("/login")
     public String login(@RequestParam String email,
                         @RequestParam String password,
@@ -37,10 +51,9 @@ public class LoginController {
         return "redirect:/login?error=true";
     }
 
-    // LOGOUT METHOD (fixes your error)
     @GetMapping("/logout")
     public String logout(HttpSession session) {
-        session.invalidate();   // destroys session
+        session.invalidate();
         return "redirect:/login";
     }
 }
